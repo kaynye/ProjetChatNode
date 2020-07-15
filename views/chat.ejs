@@ -1,0 +1,262 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+
+    <title>Chat</title>
+    <meta name="description" content="Ripped T-Rex/Dino game of Chromium">
+    <meta property="og:title" content="Play the hidden T-Rex Dinosaur game of Chromium .">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://www.thecodepost.org">
+    <meta property="og:image" content="http://img.thecodepost.org/2015/01/trex.png">
+    <meta property="og:site_name" content="The Code Post">
+    <meta property="og:description" content="Google Chrome has a hidden T-Rex game only for offline mode. But now, you can enjoy it any time and on any device, but you gotta stay online!!!">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@thecodepost">
+    <meta name="twitter:creator" content="@thecodepost">
+    <meta name="twitter:title" content="Check out the cool hidden game from Google Chrome!">
+    <meta name="twitter:description" content="Check out the cool hidden game from Google Chrome!">
+    <meta name="twitter:image:src" content="http://img.thecodepost.org/2015/01/trex.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="css/styleChat.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="jscolor.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.css">
+      <script src="https://docs.handsontable.com/pro/bower_components/handsontable-pro/dist/handsontable.full.min.js"></script>
+
+  </head>
+  <body>
+    <center><div id=heade><header>
+      <h1> Bienvenue sur notre site ! <img src="deconnexion.png" id="deconnexion" onclick="deconnection()"></img></h1>
+
+    </header></div></center>
+
+  <h1 id='name' hidden></h1></br>
+
+  <div id="superChat">
+  <script src="jscolor.js"></script>
+  	 <center><h4>Mon score :</h4><h4 id="monScore"></h4></center>
+  	<div id="mesVal">
+
+  		<div id="listeConecter">
+  			<h3>Liste des personnes connectées :</h3>
+  			<div id="valConnecter"></div>
+  		</div>
+  		<div id="principale">
+  			<div id="mesText" class='center'></div>
+  			<form action="javascript:envoi()">
+  				<center>
+  					<div>
+  						<input type="text" name="monMessage"  id="monMsg" class="nomMessage "/>
+  						<input type="submit" id="a"/>
+  					</div>
+  				</center>
+  			</form>
+  		</div>
+      <div id="listeJeu">
+
+  			<h3>Liste des Jeux:</h3>
+  			<ul>
+  				<li onclick="affichePong()" style="cursor:pointer;">Pong</li>
+  				<li onclick="afficheMod()" style="cursor:pointer;">One For One</li>
+  				<li onclick="afficheRex()" style="cursor:pointer;">T-rex</li>
+          <li onclick="affichePuissance()" style="cursor:pointer;"> Puissance 4 </li>
+  			</ul>
+      </br>
+      </br>
+      </br>
+      <h5 onclick="afficheTab()">Tableau des Scores</h5>
+  		</div>
+    </div>
+
+      <div id="currentGame"></div>
+  	</div>
+    <div class="option" id="changeCol">
+      <h4>Changer sa couleur de message :</h4>
+      <button id="" class="jscolor {valueElement:'chosen-value', onFineChange:'setTextColor()'}">couleur</button>
+        <input id="chosen-value" class="myColor" placeholder="FF22FF">
+      <button onclick="changeColor()" >Valider</button>
+    </div>
+
+  	<div>
+      <script>
+      //var socket = io.connect('http://localhost:8000');
+      var socket = io();
+	  socket.emit('getPage');
+      socket.emit('refeshCo');
+      
+
+      			socket.on ('messageSuccess', function (data) {
+      				//socket.emit('message', document.getElementById('password').value);
+      			});
+      			socket.on('getPage', function (nom,dialogue) {
+      				document.getElementById('name').innerHTML=nom;
+
+      				for (i=0; i<dialogue.length;i++){
+      					$('#mesText').append("<div class='text' id='message"+i+"'> <p><b>"+ dialogue[i].nom +"   : </b></br>  "+ dialogue[i].message+ "<p></div>");
+      					$('#message'+i).css("background-color",dialogue[i].color);
+      					$('#message'+i).css("border-color",dialogue[i].color);
+      				}
+      				if (dialogue.length!=0){
+      				document.getElementById("mesText").scrollTop=document.getElementById('message'+(dialogue.length-1)).offsetTop;
+      				}
+      			});
+
+      			socket.on('newMsg', function (data) {
+      				//$('#mesText').append("<div class='text jscolor'><p>"+data+"</p></div>");
+      				$('#mesText').empty();
+      				for (i=0; i<data.length;i++){
+      				console.log(data[i]);
+      					$('#mesText').append("<div class='text' id='message"+i+"'> <p><b>"+ data[i].nom +"   : </b></br>  "+ data[i].message+ "<p></div>");
+      					$('#message'+i).css("background-color",data[i].color);
+      					$('#message'+i).css("border-color",data[i].color);
+      				}
+      				if (data.length!=0){
+      				document.getElementById("mesText").scrollTop=document.getElementById('message'+(data.length-1)).offsetTop;
+      				}
+      			});
+
+      			function envoi(){
+      				socket.emit("envoiMsg",$("#monMsg").val());
+      				//reloadMsg();
+      				$("#monMsg")[0].value="";
+      			}
+      			function setTextColor() {
+
+      				picker=$('#chosen-value');
+      				let categorydivs = $(".text");
+      					$.each(categorydivs, function (index, div) {
+      					console.log('oui');
+      					});
+      			}
+
+      			function reloadMsg(){
+      				socket.emit("reloadMsg");
+      			}
+
+      			socket.on('reloadMsg', function (data) {
+      				document.getElementById('name').innerHTML=data;
+      			});
+
+      			socket.on('refeshCo', function (data) {
+      				console.log(data);
+      				$('#valConnecter').empty();
+      				for (i=0; i<data.length;i++){
+      					$('#valConnecter').append("<div class='name' > <p><b>"+ data[i].nom +"</b><p></div></br>");
+      					if (data[i].nom==document.getElementById('name').innerHTML){
+      						document.getElementById('monScore').append(data[i].score);
+      					}
+      				}
+
+      			});
+      			socket.on('message', function (data) {
+      				alert(data);
+      				window.location.reload();
+      			});
+
+            function deconnection(){
+      				socket.emit("logout");
+      				window.location.reload();
+      			}
+
+      	function affichePong(){
+          console.log("pong")
+				$.get( "game/pong.html", function( data ) {
+          console.log("arriver")
+				  $( "#currentGame" ).html( data );
+				  $( "#currentGame" ).dialog({
+					width:550,
+					height:400,
+          close: function( event, ui ) {
+						window.location.reload();
+					}
+				  });
+				});
+      }
+
+      function afficheMod(){
+				$.get( "game/modif.html", function( data ) {
+				  $( "#currentGame" ).html( data );
+				  $( "#currentGame" ).dialog({
+					width:550,
+					height:400,
+					close: function( event, ui ) {
+						socket.emit("clearOneForOne");
+						window.location.reload();
+					},
+					show: {
+						effect: "explode",//clip est bien aussi
+						duration: 1000
+					  }
+				  });
+				});
+			}
+
+      function afficheRex(){
+				$.get( "game/trex.html", function( data ) {
+				  $( "#currentGame" ).html( data );
+				  $( "#currentGame" ).dialog({
+					width:700,
+					height:400,
+          close: function( event, ui ) {
+						window.location.reload();
+					}
+				  });
+				});
+			}
+
+      function affichePuissance(){
+				$.get( "game/puis4.html", function( data ) {
+				  $( "#currentGame" ).html( data );
+				  $( "#currentGame" ).dialog({
+					width:600,
+					height:540,
+          close: function( event, ui ) {
+						window.location.reload();
+					}
+				  });
+				});
+			}
+
+      function afficheTab(){
+        console.log("tab");
+      $.get( "game/tableau.html", function( data ) {
+        console.log("tab2");
+        $( "#currentGame" ).html( data );
+        $( "#currentGame" ).dialog({
+        width:550,
+        height:400,
+        close: function( event, ui ) {
+          window.location.reload();
+        }
+        });
+      });
+    }
+
+      //////////color
+      function setTextColor() {
+				picker=$('#chosen-value');
+				$('.myColor').css("background-color",'#' + picker[0].value);
+
+			}
+
+      function changeColor(){
+				socket.emit("changeColor",'#'+$('#chosen-value')[0].value);
+			}
+			
+	socket.on('newScore', function (data) {
+				console.log(data);
+				$('#monScore').empty();
+				//for (i=0; i<data.length;i++){
+					$('#monScore').append(data);
+				//}
+			});
+      ////
+
+      </script>
+
+    </div>
+  </body>
+</html>

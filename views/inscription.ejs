@@ -1,0 +1,84 @@
+<html lang="fr" >
+
+<head>
+
+
+  <meta charset="UTF-8">
+
+  <title>Animated SVG Avatar</title>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href	="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+      <link rel="stylesheet" href="css/styleRegister.css">
+
+
+</head>
+
+<body>
+
+  <form action="javascript:toJSon()" class="form1" id="form">
+
+
+	<div class="inputGroup inputGroup1">
+		<label for="email1">Username</label>
+		<input type="text" id="username" class="username" maxlength="256"/>
+
+	</div>
+	<div class="inputGroup inputGroup1">
+		<label for="email1">name</label>
+		<input type="text" id="name" class="email" maxlength="256"/>
+
+	</div>
+	<div class="inputGroup inputGroup1">
+		<label for="email1">Email</label>
+		<input type="text" id="email" class="email" maxlength="256"/>
+
+	</div>
+	<div class="inputGroup inputGroup2">
+		<label for="password">Password</label>
+		<input type="password" id="password" class="password" />
+	</div>
+	<div class="inputGroup  inputGroup3">
+		<button onclick="submit" id="login">Register</button>
+	</div>
+	<center><label id="registered" for="registered"onclick="window.location.href='/'">Already registered</label></center>
+</form>
+
+<!-- <script src='http://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin.min.js?r=182'></script> -->
+</body>
+
+
+	<script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+
+			socket.on('redirect', function() {
+				window.location.href = "/";
+
+			});
+
+		function toJSon(){
+			username = document.getElementById("username").value;
+			name = document.getElementById("name").value;
+			email = document.getElementById("email").value;
+			password = document.getElementById("password").value;
+
+			objet={};
+			objet['username']=username;
+			objet['name']=name;
+			objet['email']=email;
+			objet['password']=password;
+
+			socket.emit('register', objet);
+			console.log(objet);
+		}
+
+        </script>
+
+
+
+
+</html>
